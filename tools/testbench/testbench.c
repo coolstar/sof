@@ -19,9 +19,6 @@
 
 #define TESTBENCH_NCH 2 /* Stereo */
 
-/* compatible variables, not used */
-intptr_t _comp_init_start, _comp_init_end;
-
 /*
  * Parse output filenames from user input
  * This function takes in the output filenames as an input in the format:
@@ -698,7 +695,6 @@ static int pipline_test(struct testbench_prm *tp)
 
 		test_pipeline_free(tp);
 
-		//tp->count++;
 		dp_count++;
 	}
 

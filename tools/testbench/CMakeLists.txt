@@ -33,7 +33,7 @@ endif()
 target_compile_options(testbench PRIVATE -g -O3 -Wall -Werror -Wl,-EL -Wmissing-prototypes
   -Wimplicit-fallthrough -DCONFIG_LIBRARY -imacros${config_h})
 
-target_link_libraries(testbench PRIVATE -ldl -lm)
+target_link_libraries(testbench PRIVATE -lm)
 
 install(TARGETS testbench DESTINATION bin)
 
@@ -49,12 +49,13 @@ ExternalProject_Add(sof_ep
 		-DCMAKE_VERBOSE_MAKEFILE=${CMAKE_VERBOSE_MAKEFILE}
 		-DINIT_CONFIG=library_defconfig
 		-DCONFIG_H_PATH=${config_h}
+		-DCONFIG_LIBRARY_STATIC=ON
 	BUILD_ALWAYS 1
-	BUILD_BYPRODUCTS "${sof_install_directory}/lib/libsof.so"
+	BUILD_BYPRODUCTS "${sof_install_directory}/lib/libsof.a"
 )
 
-add_library(sof_library SHARED IMPORTED)
-set_target_properties(sof_library PROPERTIES IMPORTED_LOCATION "${sof_install_directory}/lib/libsof.so")
+add_library(sof_library STATIC IMPORTED)
+set_target_properties(sof_library PROPERTIES IMPORTED_LOCATION "${sof_install_directory}/lib/libsof.a")
 add_dependencies(sof_library sof_ep)
 
 set(parser_source_directory "${PROJECT_SOURCE_DIR}/../tplg_parser")
@@ -68,18 +69,19 @@ ExternalProject_Add(parser_ep
 	CMAKE_ARGS
 		-DCMAKE_INSTALL_PREFIX=${PROJECT_BINARY_DIR}/sof_parser/install
 		-DCMAKE_VERBOSE_MAKEFILE=${CMAKE_VERBOSE_MAKEFILE}
+		-DCONFIG_LIBRARY_STATIC=ON
 	BUILD_ALWAYS 1
-	BUILD_BYPRODUCTS "${parser_install_dir}/lib/libsof_tplg_parser.so"
+	BUILD_BYPRODUCTS "${parser_install_dir}/lib/libsof_tplg_parser.a"
 )
 
-add_library(sof_parser_lib SHARED IMPORTED)
-set_target_properties(sof_parser_lib PROPERTIES IMPORTED_LOCATION "${parser_install_dir}/lib/libsof_tplg_parser.so")
+add_library(sof_parser_lib STATIC IMPORTED)
+set_target_properties(sof_parser_lib PROPERTIES IMPORTED_LOCATION "${parser_install_dir}/lib/libsof_tplg_parser.a")
 add_dependencies(sof_parser_lib parser_ep)
 
 add_dependencies(testbench sof_parser_lib)
 target_link_libraries(testbench PRIVATE sof_library)
 target_link_libraries(testbench PRIVATE sof_parser_lib)
-target_link_libraries(testbench PRIVATE pthread)
+target_link_libraries(testbench PRIVATE m)
 target_include_directories(testbench PRIVATE ${sof_install_directory}/include)
 target_include_directories(testbench PRIVATE ${parser_install_dir}/include)
 
