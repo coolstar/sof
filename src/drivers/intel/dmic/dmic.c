@@ -15,7 +15,7 @@
 #include <sof/drivers/timestamp.h>
 #include <rtos/alloc.h>
 #include <sof/lib/cpu.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <sof/lib/dma.h>
 #include <sof/lib/memory.h>
 #include <sof/lib/pm_runtime.h>

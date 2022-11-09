@@ -9,7 +9,7 @@
 #include <sof/drivers/afe-drv.h>
 #include <rtos/timer.h>
 #include <rtos/alloc.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <sof/lib/dma.h>
 #include <sof/lib/io.h>
 #include <sof/lib/notifier.h>

@@ -9,7 +9,7 @@
 #define __SOF_DRIVERS_HDA_H__
 
 #include <ipc/dai-intel.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 
 struct hda_pdata {
 	struct sof_ipc_dai_hda_params params;

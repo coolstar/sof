@@ -14,7 +14,7 @@
 #include <rtos/alloc.h>
 #include <rtos/clk.h>
 #include <sof/lib/cpu.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <sof/lib/dma.h>
 #include <sof/lib/pm_runtime.h>
 #include <sof/lib/notifier.h>

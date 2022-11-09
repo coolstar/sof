@@ -17,7 +17,7 @@
 #include <sof/debug/panic.h>
 #include <rtos/interrupt.h>
 #include <rtos/alloc.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <sof/lib/io.h>
 #include <sof/lib/memory.h>
 #include <sof/lib/pm_runtime.h>

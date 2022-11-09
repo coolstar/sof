@@ -9,7 +9,7 @@
 #define __SOF_DRIVERS_ESAI_H__
 
 #include <rtos/bit.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <sof/trace/trace.h>
 #include <user/trace.h>
 

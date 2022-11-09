@@ -17,7 +17,7 @@
 #include <rtos/timer.h>
 #include <rtos/alloc.h>
 #include <rtos/cache.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <sof/lib/memory.h>
 #include <sof/lib/notifier.h>
 #include <sof/lib/uuid.h>

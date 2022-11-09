@@ -5,7 +5,7 @@
 // Author: YC Hung <yc.hung@mediatek.com>
 
 #include <sof/common.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <sof/lib/memory.h>
 #include <sof/sof.h>
 #include <rtos/spinlock.h>

@@ -8,7 +8,7 @@
 #include <sof/audio/buffer.h>
 #include <sof/audio/component_ext.h>
 #include <sof/audio/pipeline.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <rtos/wait.h>
 #include <sof/list.h>
 #include <rtos/spinlock.h>

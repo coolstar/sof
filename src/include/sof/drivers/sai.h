@@ -12,7 +12,7 @@
 #include <ipc/dai.h>
 #include <ipc/dai-imx.h>
 #include <rtos/bit.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <sof/trace/trace.h>
 #include <user/trace.h>
 

@@ -10,7 +10,7 @@
 #include <rtos/bit.h>
 #include <sof/drivers/edma.h>
 #include <sof/drivers/sai.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <sof/lib/dma.h>
 #include <rtos/wait.h>
 #include <sof/lib/uuid.h>

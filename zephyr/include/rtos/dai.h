@@ -13,8 +13,11 @@
   * \author Keyon Jie <yang.jie@linux.intel.com>
   */
 
-#ifndef __SOF_LIB_DAI_ZEPHYR_H__
-#define __SOF_LIB_DAI_ZEPHYR_H__
+#ifndef __ZEPHYR_RTOS_DAI_H__
+#define __ZEPHYR_RTOS_DAI_H__
+
+/* TODO: legacy build support needs this atm - to be removed */
+#define __SOF_LIB_DAI_H__
 
 #include <platform/lib/dai.h>
 #include <rtos/bit.h>
@@ -269,4 +272,4 @@ int dai_position(struct comp_dev *dev, struct sof_ipc_stream_posn *posn);
 void dai_dma_position_update(struct comp_dev *dev);
 /** @}*/
 
-#endif /* __SOF_LIB_DAI_ZEPHYR_H__ */
+#endif /* __ZEPHYR_RTOS_DAI_H__ */

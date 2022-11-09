@@ -11,7 +11,7 @@
 #include <sof/schedule/edf_schedule.h>
 #include <sof/schedule/ll_schedule_domain.h>
 #include <sof/lib/mailbox.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 
 #ifndef __ZEPHYR__
 static SHARED_DATA struct timer timer = {};

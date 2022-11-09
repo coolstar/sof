@@ -14,7 +14,7 @@
 #include <sof/lib/agent.h>
 #include <rtos/clk.h>
 #include <sof/lib/cpu.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <sof/lib/dma.h>
 #include <sof/lib/io.h>
 #include <sof/lib/mailbox.h>

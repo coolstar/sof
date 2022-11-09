@@ -10,7 +10,7 @@
 
 #include <rtos/bit.h>
 #include <rtos/clk.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <rtos/wait.h>
 #include <sof/trace/trace.h>
 #include <ipc/dai.h>

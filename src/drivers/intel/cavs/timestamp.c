@@ -8,7 +8,7 @@
 #include <sof/drivers/ssp.h>
 #include <sof/drivers/timestamp.h>
 #include <rtos/clk.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <sof/lib/io.h>
 #include <ipc/dai.h>
 #include <ipc/stream.h>

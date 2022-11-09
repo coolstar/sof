@@ -9,7 +9,7 @@
 
 #include <ipc/dai-intel.h>
 #include <platform/drivers/alh.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 
 struct alh_pdata {
 	struct sof_ipc_dai_alh_params params;

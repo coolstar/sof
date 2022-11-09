@@ -8,7 +8,7 @@
 #include <sof/audio/component.h>
 #include <sof/drivers/ssp.h>
 #include <rtos/alloc.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <sof/lib/dma.h>
 #include <sof/lib/shim.h>
 #include <rtos/spinlock.h>

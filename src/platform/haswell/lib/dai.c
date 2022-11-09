@@ -7,7 +7,7 @@
 #include <sof/common.h>
 #include <rtos/interrupt.h>
 #include <sof/drivers/ssp.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <sof/lib/dma.h>
 #include <sof/lib/memory.h>
 #include <sof/sof.h>

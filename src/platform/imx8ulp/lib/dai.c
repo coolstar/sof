@@ -7,7 +7,7 @@
 #include <sof/common.h>
 #include <sof/drivers/edma.h>
 #include <sof/drivers/sai.h>
-#include <sof/lib/dai.h>
+#include <rtos/dai.h>
 #include <sof/lib/memory.h>
 #include <sof/sof.h>
 #include <rtos/spinlock.h>
