@@ -439,7 +439,7 @@ static int dai_verify_params(struct comp_dev *dev, struct sof_ipc_stream_params 
 
 /* set component audio SSP and DMA configuration */
 static int dai_playback_params(struct comp_dev *dev, uint32_t period_bytes,
-			       uint32_t period_count)
+			       uint32_t period_count, struct sof_ipc_stream_params *params)
 {
 	struct dai_data *dd = comp_get_drvdata(dev);
 	struct dma_sg_config *config = &dd->config;
@@ -454,10 +454,19 @@ static int dai_playback_params(struct comp_dev *dev, uint32_t period_bytes,
 	int i, err = 0;
 
 	buffer_release(local_buf);
-
+#if 0
 	/* set processing function */
 	dd->process = pcm_get_conversion_function(local_fmt, dma_fmt);
+#else
+    /* set processing function */
+	dd->process = host_dai_get_converter_func(params->sample_container_bytes,
+											params->sample_valid_bytes,
+											local_buf->stream.frame_fmt,
+											local_buf->stream.valid_sample_fmt,
+											ipc4_gtw_ssp,
+											dev->direction);
 
+#endif
 	if (!dd->process) {
 		comp_err(dev, "dai_playback_params(): converter function NULL: local fmt %d dma fmt %d\n",
 			 local_fmt, dma_fmt);
@@ -556,7 +565,7 @@ out:
 }
 
 static int dai_capture_params(struct comp_dev *dev, uint32_t period_bytes,
-			      uint32_t period_count)
+			      uint32_t period_count, struct sof_ipc_stream_params *params)
 {
 	struct dai_data *dd = comp_get_drvdata(dev);
 	struct dma_sg_config *config = &dd->config;
@@ -572,8 +581,19 @@ static int dai_capture_params(struct comp_dev *dev, uint32_t period_bytes,
 
 	buffer_release(local_buf);
 
+#if 0
 	/* set processing function */
 	dd->process = pcm_get_conversion_function(dma_fmt, local_fmt);
+#else
+		/* set processing function */
+		dd->process = host_dai_get_converter_func(params->sample_container_bytes,
+												params->sample_valid_bytes,
+												local_buf->stream.frame_fmt,
+												local_buf->stream.valid_sample_fmt,
+												ipc4_gtw_ssp,
+												dev->direction);
+	
+#endif
 
 	if (!dd->process) {
 		comp_err(dev, "dai_capture_params(): converter function NULL: local fmt %d dma fmt %d\n",
@@ -815,8 +835,8 @@ static int dai_params(struct comp_dev *dev, struct sof_ipc_stream_params *params
 	}
 
 	return dev->direction == SOF_IPC_STREAM_PLAYBACK ?
-		dai_playback_params(dev, period_bytes, period_count) :
-		dai_capture_params(dev, period_bytes, period_count);
+		dai_playback_params(dev, period_bytes, period_count, params) :
+		dai_capture_params(dev, period_bytes, period_count, params);
 }
 
 static int dai_config_prepare(struct comp_dev *dev)

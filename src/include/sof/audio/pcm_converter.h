@@ -167,4 +167,52 @@ int pcm_convert_as_linear(const struct audio_stream __sparse_cache *source, uint
 			  struct audio_stream __sparse_cache *sink, uint32_t ooffset,
 			  uint32_t samples, pcm_converter_lin_func converter);
 
+
+/* In sof normal format conversion path, sample size should be equal
+ * to container size except format of S24_LE. In ipc4 case, sample
+ * size can be different with container size. This function is used to
+ * check conversion mode.
+ */
+static inline bool use_no_container_convert_function(enum sof_ipc_frame in,
+                                             enum sof_ipc_frame valid_in_bits,
+                                             enum sof_ipc_frame out,
+                                             enum sof_ipc_frame valid_out_bits)
+{
+       /* valid sample size is equal to container size, go normal path */
+       if (in == valid_in_bits && out == valid_out_bits) {
+               if (in == SOF_IPC_FRAME_S24_3LE || out == SOF_IPC_FRAME_S24_3LE)
+                       return false;
+
+               return true;
+       }
+
+       return false;
+}
+
+/**
+ * \brief Retrieves PCM conversion function.
+ * \param[in] in Source frame format.
+ * \param[in] out Sink frame format.
+ */
+static inline pcm_converter_func
+host_dai_get_converter_func(enum sof_ipc_frame __sparse_cache in,
+                           enum sof_ipc_frame __sparse_cache in_valid,
+                           enum sof_ipc_frame __sparse_cache out,
+                           enum sof_ipc_frame __sparse_cache out_valid,
+                       enum ipc4_gateway_type type,
+                               enum ipc4_direction_type dir)
+{
+       /* convert to ipc3 format */
+       in -= 2;
+       in_valid -= 2;
+
+       /* check container & sample size */
+       if (use_no_container_convert_function(in, in_valid, out, out_valid))
+               return pcm_get_conversion_function(in, out);
+       else
+               return pcm_get_conversion_vc_function(in, in_valid, out, out_valid, type, dir);
+
+}
+
+
 #endif /* __SOF_AUDIO_PCM_CONVERTER_H__ */

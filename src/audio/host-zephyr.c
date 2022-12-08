@@ -987,10 +987,20 @@ static int host_params(struct comp_dev *dev,
 	hd->copy = hd->copy_type == COMP_COPY_ONE_SHOT ? host_copy_one_shot :
 		host_copy_normal;
 
+#if 0
 	/* set processing function */
 	hd->process = pcm_get_conversion_function(host_buf_c->stream.frame_fmt,
 						  host_buf_c->stream.frame_fmt);
+#else
+      /* set processing function */
+    hd->process = host_dai_get_converter_func(params->sample_container_bytes,
+                                                params->sample_valid_bytes,
+                                                host_buf_c->stream.frame_fmt,
+                                                host_buf_c->stream.valid_sample_fmt,
+                                                ipc4_gtw_host,
+                                                dev->direction);
 
+#endif
 out:
 	buffer_release(host_buf_c);
 	return err;
