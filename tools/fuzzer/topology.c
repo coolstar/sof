@@ -452,7 +452,7 @@ static int fuzzer_load_widget(struct tplg_context *ctx)
 		break;
 	case SND_SOC_TPLG_DAPM_SCHEDULER:
 		/* find comp id for scheduling comp */
-		if (dev_type == FUZZER_DEV)
+		if (dev_type == TPLG_PARSER_FUZZER_DEV)
 			ctx->sched_id = find_widget(temp_comp_list, comp_id, ctx->widget->sname);
 
 		if (fuzzer_load_pipeline(ctx) < 0) {
