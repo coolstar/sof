@@ -18,6 +18,11 @@
 #include <tplg_parser/topology.h>
 #include <tplg_parser/tokens.h>
 
+struct frame_types {
+	char *name;
+	enum sof_ipc_frame frame;
+};
+
 static const struct frame_types sof_frames[] = {
 	/* TODO: fix topology to use ALSA formats */
 	{"s16le", SOF_IPC_FRAME_S16_LE},
@@ -31,7 +36,7 @@ static const struct frame_types sof_frames[] = {
 	{"FLOAT_LE", SOF_IPC_FRAME_FLOAT},
 };
 
-enum sof_ipc_frame find_format(const char *name)
+static enum sof_ipc_frame find_format(const char *name)
 {
 	int i;
 
@@ -45,7 +50,7 @@ enum sof_ipc_frame find_format(const char *name)
 }
 
 /* helper functions to get tokens */
-int get_token_uint32_t(void *elem, void *object, uint32_t offset,
+int tplg_token_get_uint32_t(void *elem, void *object, uint32_t offset,
 		       uint32_t size)
 {
 	struct snd_soc_tplg_vendor_value_elem *velem = elem;
@@ -55,7 +60,7 @@ int get_token_uint32_t(void *elem, void *object, uint32_t offset,
 	return 0;
 }
 
-int get_token_uuid(void *elem, void *object, uint32_t offset,
+int tplg_token_get_uuid(void *elem, void *object, uint32_t offset,
 		   uint32_t size)
 {
 	struct snd_soc_tplg_vendor_uuid_elem *velem = elem;
@@ -66,32 +71,13 @@ int get_token_uuid(void *elem, void *object, uint32_t offset,
 	return 0;
 }
 
-int get_token_comp_format(void *elem, void *object, uint32_t offset,
+int tplg_token_get_comp_format(void *elem, void *object, uint32_t offset,
 			  uint32_t size)
 {
 	struct snd_soc_tplg_vendor_string_elem *velem = elem;
 	uint32_t *val = object + offset;
 
 	*val = find_format(velem->string);
-	return 0;
-}
-
-int get_token_dai_type(void *elem, void *object, uint32_t offset, uint32_t size)
-{
-	struct snd_soc_tplg_vendor_string_elem *velem = elem;
-	uint32_t *val = (uint32_t *)((uint8_t *)object + offset);
-
-	*val = find_dai(velem->string);
-	return 0;
-}
-
-int get_token_process_type(void *elem, void *object, uint32_t offset,
-			   uint32_t size)
-{
-	struct snd_soc_tplg_vendor_string_elem *velem = elem;
-	uint32_t *val = (uint32_t *)((uint8_t *)object + offset);
-
-	*val = tplg_get_process_name(velem->string);
 	return 0;
 }
 
@@ -262,48 +248,7 @@ int sof_parse_string_tokens(void *object,
 	return 0;
 }
 
-struct sof_process_types {
-	const char *name;
-	enum sof_ipc_process_type type;
-	enum sof_comp_type comp_type;
-};
-
-static const struct sof_process_types sof_process[] = {
-	{"EQFIR", SOF_PROCESS_EQFIR, SOF_COMP_EQ_FIR},
-	{"EQIIR", SOF_PROCESS_EQIIR, SOF_COMP_EQ_IIR},
-	{"KEYWORD_DETECT", SOF_PROCESS_KEYWORD_DETECT, SOF_COMP_KEYWORD_DETECT},
-	{"KPB", SOF_PROCESS_KPB, SOF_COMP_KPB},
-	{"CHAN_SELECTOR", SOF_PROCESS_CHAN_SELECTOR, SOF_COMP_SELECTOR},
-	{"MUX", SOF_PROCESS_MUX, SOF_COMP_MUX},
-	{"DEMUX", SOF_PROCESS_DEMUX, SOF_COMP_DEMUX},
-	{"DCBLOCK", SOF_PROCESS_DCBLOCK, SOF_COMP_DCBLOCK},
-};
-
-enum sof_ipc_process_type tplg_get_process_name(const char *name)
-{
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(sof_process); i++) {
-		if (strcmp(name, sof_process[i].name) == 0)
-			return sof_process[i].type;
-	}
-
-	return SOF_PROCESS_NONE;
-}
-
-enum sof_comp_type tplg_get_process_type(enum sof_ipc_process_type type)
-{
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(sof_process); i++) {
-		if (sof_process[i].type == type)
-			return sof_process[i].comp_type;
-	}
-
-	return SOF_COMP_NONE;
-}
-
-bool is_valid_priv_size(size_t size_read, size_t priv_size,
+bool tplg_is_valid_priv_size(size_t size_read, size_t priv_size,
 			      struct snd_soc_tplg_vendor_array *array)
 {
 	size_t arr_size, elem_size, arr_elems_size;

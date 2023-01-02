@@ -21,7 +21,7 @@
 
 /* load pipeline graph DAPM widget*/
 int tplg_create_graph(struct tplg_context *ctx, int num_comps, int pipeline_id,
-		    struct comp_info *temp_comp_list, char *pipeline_string,
+		    struct tplg_comp_info *temp_comp_list, char *pipeline_string,
 		    struct sof_ipc_pipe_comp_connect *connection,
 		    int route_num, int count)
 {

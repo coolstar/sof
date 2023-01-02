@@ -24,24 +24,6 @@
 
 #define MAX_TPLG_OBJECT_SIZE	4096
 
-const struct sof_dai_types sof_dais[] = {
-	{"SSP", SOF_DAI_INTEL_SSP},
-	{"HDA", SOF_DAI_INTEL_HDA},
-	{"DMIC", SOF_DAI_INTEL_DMIC},
-};
-
-/* find dai type */
-enum sof_ipc_dai_type find_dai(const char *name)
-{
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(sof_dais); i++) {
-		if (strcmp(name, sof_dais[i].name) == 0)
-			return sof_dais[i].type;
-	}
-
-	return SOF_DAI_INTEL_NONE;
-}
 
 /*
  * Register component driver
@@ -94,7 +76,7 @@ void register_comp(int comp_type, struct sof_ipc_comp_ext *comp_ext)
 
 }
 
-int find_widget(struct comp_info *temp_comp_list, int count, char *name)
+int find_widget(struct tplg_comp_info *temp_comp_list, int count, char *name)
 {
 	return 0;
 }
@@ -164,7 +146,7 @@ int tplg_register_buffer(struct tplg_context *ctx)
 }
 
 /* load pipeline graph DAPM widget*/
-int tplg_register_graph(void *dev, struct comp_info *temp_comp_list,
+int tplg_register_graph(void *dev, struct tplg_comp_info *temp_comp_list,
 			char *pipeline_string, FILE *file,
 			int count, int num_comps, int pipeline_id)
 {
@@ -310,7 +292,7 @@ int load_process(struct tplg_context *ctx)
 
 	/* Get control into ctl and priv_data */
 	for (i = 0; i < widget->num_kcontrols; i++) {
-		ret = tplg_create_single_control(&ctl, &priv_data, ctx->file);
+		ret = tplg_get_single_control(&ctl, &priv_data, ctx->file);
 
 		if (ret < 0) {
 			fprintf(stderr, "error: failed control load\n");
@@ -393,7 +375,7 @@ int tplg_register_src(struct tplg_context *ctx)
 /* load dapm widget */
 int load_widget(struct tplg_context *ctx)
 {
-	struct comp_info *temp_comp_list = ctx->info;
+	struct tplg_comp_info *temp_comp_list = ctx->info;
 	int comp_index = ctx->info_index;
 	int comp_id = ctx->comp_id;
 	int ret = 0;
@@ -575,7 +557,7 @@ static int tplg_load_fileread(struct tplg_context *ctx,
 			return -EINVAL;
 		}
 
-		if (!is_valid_priv_size(total_array_size, size, array)) {
+		if (!tplg_is_valid_priv_size(total_array_size, size, array)) {
 			fprintf(stderr, "error: filewrite array size mismatch for widget size %d\n",
 				size);
 			free(array);
@@ -641,7 +623,7 @@ static int tplg_load_filewrite(struct tplg_context *ctx,
 			return -EINVAL;
 		}
 
-		if (!is_valid_priv_size(total_array_size, size, array)) {
+		if (!tplg_is_valid_priv_size(total_array_size, size, array)) {
 			fprintf(stderr, "error: filewrite array size mismatch\n");
 			free(array);
 			return -EINVAL;
@@ -808,7 +790,7 @@ int parse_topology(struct tplg_context *ctx)
 {
 	struct snd_soc_tplg_hdr *hdr;
 	struct testbench_prm *tp = ctx->tp;
-	struct comp_info *comp_list_realloc = NULL;
+	struct tplg_comp_info *comp_list_realloc = NULL;
 	char message[DEBUG_MSG_LEN];
 	int i;
 	int next;
@@ -902,8 +884,8 @@ int parse_topology(struct tplg_context *ctx)
 				tp->max_pipeline_id = hdr->index;
 
 			ctx->info_elems += hdr->count;
-			size = sizeof(struct comp_info) * ctx->info_elems;
-			comp_list_realloc = (struct comp_info *)
+			size = sizeof(struct tplg_comp_info) * ctx->info_elems;
+			comp_list_realloc = (struct tplg_comp_info *)
 					 realloc(ctx->info, size);
 
 			if (!comp_list_realloc && size) {

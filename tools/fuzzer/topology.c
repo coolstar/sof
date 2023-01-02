@@ -69,7 +69,7 @@ int ipc_comp_new(struct ipc *ipc, ipc_comp *new)
 	return 0;
 }
 
-int find_widget(struct comp_info *temp_comp_list, int count, char *name)
+int find_widget(struct tplg_comp_info *temp_comp_list, int count, char *name)
 {
 	int i;
 
@@ -107,7 +107,7 @@ static int fuzzer_complete_pipeline(struct fuzz *fuzzer, uint32_t comp_id)
 }
 
 /* load pipeline graph DAPM widget*/
-static int fuzzer_load_graph(void *dev, struct comp_info *temp_comp_list,
+static int fuzzer_load_graph(void *dev, struct tplg_comp_info *temp_comp_list,
 		      int count, int num_comps, int pipeline_id)
 {
 	struct sof_ipc_pipe_comp_connect connection;
@@ -172,7 +172,7 @@ static int fuzzer_load_pcm(struct tplg_context *ctx, int dir)
 	struct sof_ipc_comp_reply r;
 	int ret;
 
-	ret = tplg_create_pcm(ctx, dir, &host);
+	ret = tplg_new_pcm(ctx, dir, &host);
 	if (ret < 0)
 		return ret;
 
@@ -365,7 +365,7 @@ static int fuzzer_load_process(struct tplg_context *ctx)
 /* load dapm widget */
 static int fuzzer_load_widget(struct tplg_context *ctx)
 {
-	struct comp_info *temp_comp_list = ctx->info;
+	struct tplg_comp_info *temp_comp_list = ctx->info;
 	int comp_index = ctx->info_index;
 	int comp_id = ctx->comp_id;
 	int ret = 0;
@@ -520,7 +520,7 @@ int fuzzer_parse_topology(struct tplg_context *ctx)
 {
 	struct snd_soc_tplg_hdr *hdr;
 	struct fuzz *fuzzer = ctx->fuzzer;
-	struct comp_info *comp_list_realloc = NULL;
+	struct tplg_comp_info *comp_list_realloc = NULL;
 	char message[DEBUG_MSG_LEN];
 	int num_comps = 0;
 	int i, ret = 0;
@@ -577,8 +577,8 @@ int fuzzer_parse_topology(struct tplg_context *ctx)
 			fprintf(stdout, "debug %s\n", message);
 
 			ctx->info_elems += hdr->count;
-			size = sizeof(struct comp_info) * ctx->info_elems;
-			comp_list_realloc = (struct comp_info *)
+			size = sizeof(struct tplg_comp_info) * ctx->info_elems;
+			comp_list_realloc = (struct tplg_comp_info *)
 					 realloc(ctx->info, size);
 
 			if (!comp_list_realloc && size) {
