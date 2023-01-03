@@ -38,6 +38,7 @@ int tb_setup(struct sof *sof, struct testbench_prm *tp)
 
 	/* init components */
 	sys_comp_init(sof);
+	sys_comp_file_init();
 
 	/* other necessary initializations, todo: follow better SOF init */
 	pipeline_posn_init(sof);
@@ -172,7 +173,7 @@ int tb_pipeline_reset(struct ipc *ipc, struct pipeline *p)
 }
 
 /* pipeline pcm params */
-int tb_pipeline_params(struct ipc *ipc, struct pipeline *p,
+int tb_pipeline_params(struct testbench_prm *tp, struct ipc *ipc, struct pipeline *p,
 		       struct tplg_context *ctx)
 {
 	struct ipc_comp_dev *pcm_dev;
@@ -191,16 +192,16 @@ int tb_pipeline_params(struct ipc *ipc, struct pipeline *p,
 	period = p->period;
 
 	/* Compute period from sample rates */
-	fs_period = (int)(0.9999 + ctx->fs_in * period / 1e6);
+	fs_period = (int)(0.9999 + tp->fs_in * period / 1e6);
 	sprintf(message, "period sample count %d\n", fs_period);
 	debug_print(message);
 
 	/* set pcm params */
 	params.comp_id = p->comp_id;
 	params.params.buffer_fmt = SOF_IPC_BUFFER_INTERLEAVED;
-	params.params.frame_fmt = ctx->frame_fmt;
-	params.params.rate = ctx->fs_in;
-	params.params.channels = ctx->channels_in;
+	params.params.frame_fmt = tp->frame_fmt;
+	params.params.rate = tp->fs_in;
+	params.params.channels = tp->channels_in;
 
 	switch (params.params.frame_fmt) {
 	case SOF_IPC_FRAME_S16_LE:
@@ -244,90 +245,6 @@ int tb_pipeline_params(struct ipc *ipc, struct pipeline *p,
 	return ret;
 }
 
-/* getindex of shared library from table */
-int get_index_by_name(char *comp_type, struct shared_lib_table *lib_table)
-{
-	int i;
-
-	for (i = 0; i < NUM_WIDGETS_SUPPORTED; i++) {
-		if (!strcmp(comp_type, lib_table[i].comp_name))
-			return i;
-	}
-
-	return -EINVAL;
-}
-
-/* getindex of shared library from table by widget type*/
-int get_index_by_type(uint32_t comp_type, struct shared_lib_table *lib_table)
-{
-	int i;
-
-	for (i = 0; i < NUM_WIDGETS_SUPPORTED; i++) {
-		if (comp_type == lib_table[i].widget_type)
-			return i;
-	}
-
-	return -EINVAL;
-}
-
-/* get index of shared library from table by uuid */
-int get_index_by_uuid(struct sof_ipc_comp_ext *comp_ext,
-		      struct shared_lib_table *lib_table)
-{
-	int i;
-
-	for (i = 0; i < NUM_WIDGETS_SUPPORTED; i++) {
-		if (lib_table[i].uid) {
-			if (!memcmp(lib_table[i].uid, comp_ext->uuid, UUID_SIZE))
-				return i;
-		}
-	}
-
-	return -EINVAL;
-}
-
-/* The following definitions are to satisfy libsof linker errors */
-
-struct dai *dai_get(uint32_t type, uint32_t index, uint32_t flags)
-{
-	return NULL;
-}
-
-void dai_put(struct dai *dai)
-{
-}
-
-struct dma *dma_get(uint32_t dir, uint32_t caps, uint32_t dev, uint32_t flags)
-{
-	return NULL;
-}
-
-void dma_put(struct dma *dma)
-{
-}
-
-int dma_sg_alloc(struct dma_sg_elem_array *elem_array,
-		 enum mem_zone zone,
-		 uint32_t direction,
-		 uint32_t buffer_count, uint32_t buffer_bytes,
-		 uintptr_t dma_buffer_addr, uintptr_t external_addr)
-{
-	return 0;
-}
-
-void dma_sg_free(struct dma_sg_elem_array *elem_array)
-{
-}
-
-void pipeline_xrun(struct pipeline *p, struct comp_dev *dev, int32_t bytes)
-{
-}
-
-int dai_assign_group(struct comp_dev *dev, uint32_t group_id)
-{
-	return 0;
-}
-
 /* print debug messages */
 void debug_print(char *message)
 {
@@ -338,7 +255,7 @@ void debug_print(char *message)
 /* enable trace in testbench */
 void tb_enable_trace(bool enable)
 {
-	test_bench_trace = enable;
+	//test_bench_trace = enable;
 	if (enable)
 		debug_print("trace print enabled\n");
 	else
